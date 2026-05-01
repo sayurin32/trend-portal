@@ -1,0 +1,12 @@
+{
+  "name": "trend-portal",
+  "version": "1.0.0",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node scripts/fetch.js",
+    "dev": "node scripts/fetch.js && npx -y serve dist"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
