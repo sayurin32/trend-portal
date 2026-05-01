@@ -14,11 +14,11 @@ const CATEGORIES = [
     icon: '📱',
     color: '#6366f1',
     feeds: [
-      { name: 'Hootsuite Blog',    url: 'https://blog.hootsuite.com/feed/' },
-      { name: 'Sprout Social',     url: 'https://sproutsocial.com/insights/feed/' },
-      { name: 'HubSpot Marketing', url: 'https://blog.hubspot.com/marketing/rss.xml' },
-      { name: 'Marketing Week',    url: 'https://www.marketingweek.com/feed/' },
-      { name: 'Social Media Examiner', url: 'https://www.socialmediaexaminer.com/feed/' },
+      { name: 'DIGIDAY Japan', url: 'https://digiday.jp/feed/' },
+      { name: 'AdverTimes',    url: 'https://www.advertimes.com/feed/' },
+      { name: 'LISKUL',        url: 'https://liskul.com/feed' },
+      { name: 'LIG',           url: 'https://liginc.co.jp/feed' },
+      { name: 'HubSpot Japan', url: 'https://blog.hubspot.jp/marketing/rss.xml' },
     ],
   },
   {
@@ -27,11 +27,11 @@ const CATEGORIES = [
     icon: '🎨',
     color: '#ec4899',
     feeds: [
-      { name: 'Smashing Magazine', url: 'https://www.smashingmagazine.com/feed/' },
-      { name: 'CSS-Tricks',        url: 'https://css-tricks.com/feed/' },
-      { name: 'Web Designer News', url: 'https://www.webdesignernews.com/feed' },
-      { name: 'Codrops',           url: 'https://feeds.feedburner.com/tympanus' },
-      { name: 'UX Collective',     url: 'https://uxdesign.cc/feed' },
+      { name: 'Webクリエイターボックス', url: 'https://www.webcreatorbox.com/feed' },
+      { name: 'SeleQt',                  url: 'https://www.seleqt.net/feed/' },
+      { name: 'baigie',                  url: 'https://baigie.me/officialblog/feed/' },
+      { name: 'LIG',                     url: 'https://liginc.co.jp/feed' },
+      { name: 'Smashing Magazine',       url: 'https://www.smashingmagazine.com/feed/' },
     ],
   },
   {
@@ -40,9 +40,10 @@ const CATEGORIES = [
     icon: '✍️',
     color: '#f59e0b',
     feeds: [
-      { name: 'Content Marketing Institute', url: 'https://contentmarketinginstitute.com/blog/feed/' },
-      { name: 'Copyblogger',                 url: 'https://copyblogger.com/feed/' },
-      { name: 'Ann Handley',                 url: 'https://annhandley.com/feed/' },
+      { name: 'LIG',       url: 'https://liginc.co.jp/feed' },
+      { name: 'LISKUL',    url: 'https://liskul.com/feed' },
+      { name: 'ミエルカ',  url: 'https://mieru-ca.com/blog/feed/' },
+      { name: 'AdverTimes', url: 'https://www.advertimes.com/feed/' },
     ],
   },
   {
@@ -51,9 +52,10 @@ const CATEGORIES = [
     icon: '🎬',
     color: '#ef4444',
     feeds: [
-      { name: 'No Film School',  url: 'https://nofilmschool.com/feed' },
-      { name: 'PremiumBeat',     url: 'https://www.premiumbeat.com/blog/feed/' },
-      { name: 'Motionographer',  url: 'https://motionographer.com/feed/' },
+      { name: 'VIDEO SALON',    url: 'https://videosalon.jp/feed/' },
+      { name: 'No Film School', url: 'https://nofilmschool.com/feed' },
+      { name: 'PremiumBeat',    url: 'https://www.premiumbeat.com/blog/feed/' },
+      { name: 'Cinema5D',       url: 'https://www.cinema5d.com/feed/' },
     ],
   },
   {
@@ -62,10 +64,10 @@ const CATEGORIES = [
     icon: '💻',
     color: '#10b981',
     feeds: [
-      { name: 'Dev.to',   url: 'https://dev.to/feed' },
       { name: 'Zenn',     url: 'https://zenn.dev/feed' },
       { name: 'Qiita',    url: 'https://qiita.com/popular-items/feed.atom' },
-      { name: 'CSS-Tricks Dev', url: 'https://css-tricks.com/feed/' },
+      { name: 'gihyo.jp', url: 'https://gihyo.jp/feed/atom' },
+      { name: 'Dev.to',   url: 'https://dev.to/feed' },
     ],
   },
 ];
