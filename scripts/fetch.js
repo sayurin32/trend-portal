@@ -19,8 +19,8 @@ const CATEGORIES = [
       { name: 'DIGIDAY Japan', url: 'https://digiday.jp/feed/' },
       { name: 'AdverTimes',    url: 'https://www.advertimes.com/feed/' },
       { name: 'LISKUL',        url: 'https://liskul.com/feed' },
-      { name: 'LIG',           url: 'https://liginc.co.jp/feed' },
       { name: 'HubSpot Japan', url: 'https://blog.hubspot.jp/marketing/rss.xml' },
+      { name: 'ミエルカ',      url: 'https://mieru-ca.com/blog/feed/' },
     ],
   },
   {
@@ -32,8 +32,8 @@ const CATEGORIES = [
       { name: 'Webクリエイターボックス', url: 'https://www.webcreatorbox.com/feed' },
       { name: 'SeleQt',                  url: 'https://www.seleqt.net/feed/' },
       { name: 'baigie',                  url: 'https://baigie.me/officialblog/feed/' },
+      { name: 'Developers.IO',           url: 'https://dev.classmethod.jp/feed/' },
       { name: 'LIG',                     url: 'https://liginc.co.jp/feed' },
-      { name: 'Smashing Magazine',       url: 'https://www.smashingmagazine.com/feed/' },
     ],
   },
   {
@@ -42,10 +42,10 @@ const CATEGORIES = [
     icon: '✍️',
     color: '#f59e0b',
     feeds: [
-      { name: 'LIG',        url: 'https://liginc.co.jp/feed' },
       { name: 'LISKUL',     url: 'https://liskul.com/feed' },
       { name: 'ミエルカ',   url: 'https://mieru-ca.com/blog/feed/' },
       { name: 'AdverTimes', url: 'https://www.advertimes.com/feed/' },
+      { name: 'HubSpot Japan', url: 'https://blog.hubspot.jp/marketing/rss.xml' },
     ],
   },
   {
@@ -54,10 +54,8 @@ const CATEGORIES = [
     icon: '🎬',
     color: '#ef4444',
     feeds: [
-      { name: 'VIDEO SALON',    url: 'https://videosalon.jp/feed/' },
-      { name: 'No Film School', url: 'https://nofilmschool.com/feed' },
-      { name: 'PremiumBeat',    url: 'https://www.premiumbeat.com/blog/feed/' },
-      { name: 'Cinema5D',       url: 'https://www.cinema5d.com/feed/' },
+      { name: 'VIDEO SALON', url: 'https://videosalon.jp/feed/' },
+      { name: 'AV Watch',    url: 'https://av.watch.impress.co.jp/data/rss/1.0/avw/feed.rdf' },
     ],
   },
   {
@@ -66,13 +64,43 @@ const CATEGORIES = [
     icon: '💻',
     color: '#10b981',
     feeds: [
-      { name: 'Zenn',     url: 'https://zenn.dev/feed' },
-      { name: 'Qiita',    url: 'https://qiita.com/popular-items/feed.atom' },
-      { name: 'gihyo.jp', url: 'https://gihyo.jp/feed/atom' },
-      { name: 'Dev.to',   url: 'https://dev.to/feed' },
+      { name: 'Zenn',            url: 'https://zenn.dev/feed' },
+      { name: 'Qiita',           url: 'https://qiita.com/popular-items/feed.atom' },
+      { name: 'gihyo.jp',        url: 'https://gihyo.jp/feed/atom' },
+      { name: 'Developers.IO',   url: 'https://dev.classmethod.jp/feed/' },
     ],
   },
 ];
+
+// タイトルに日本語文字が含まれるか判定
+function hasJapanese(text) {
+  return /[぀-ヿ㐀-䶿一-鿿]/.test(text);
+}
+
+// カテゴリ関連キーワード（タイトル＋説明文に1つ以上含まれれば通過）
+const KEYWORDS = {
+  sns: ['SNS', 'Instagram', 'インスタ', 'Twitter', 'TikTok', 'YouTube', 'Facebook', 'LINE',
+        'マーケティング', 'ソーシャル', 'フォロワー', '広告', 'インフルエンサー', 'エンゲージメント',
+        'リール', 'バズ', '投稿', 'アカウント', 'ブランド', 'X（旧', 'プロモーション'],
+  design: ['デザイン', 'UI', 'UX', 'CSS', 'Figma', 'フィグマ', 'レイアウト', 'フォント',
+           'カラー', 'Webサイト', 'ウェブサイト', 'ビジュアル', 'グラフィック', 'ロゴ',
+           'バナー', 'ワイヤー', 'プロトタイプ', 'アクセシビリティ', 'タイポグラフィ'],
+  writing: ['ライティング', 'コピー', '文章', '記事', 'コンテンツ', 'SEO', 'ブログ', '執筆',
+            'テキスト', '見出し', '構成', 'キャッチコピー', '読者', '言葉', 'メディア',
+            'ターゲット', 'ペルソナ', 'ストーリー'],
+  video: ['動画', '映像', '撮影', '編集', 'カメラ', 'After Effects', 'Premiere', 'ショート動画',
+          'YouTube', 'リール', 'Vlog', '映画', '照明', '音響', 'エフェクト', 'モーション',
+          '配信', 'ライブ', 'プロダクション', '字幕', 'ドローン', 'レンズ', 'シネマ',
+          'スタビライザー', 'ジンバル', 'コーデック', 'レンダリング', '収録'],
+  coding: ['プログラミング', 'コーディング', 'JavaScript', 'TypeScript', 'Python', 'React',
+           'Vue', 'HTML', 'CSS', 'エンジニア', '開発', 'API', 'フレームワーク', 'GitHub',
+           'Node', 'AI', 'LLM', 'コード', 'Web開発', 'フロントエンド', 'バックエンド'],
+};
+
+function isRelevant(item, categoryId) {
+  const text = item.title + ' ' + (item.description || '');
+  return KEYWORDS[categoryId].some(kw => text.includes(kw));
+}
 
 async function fetchFeed(source) {
   try {
@@ -341,12 +369,13 @@ async function main() {
     CATEGORIES.map(async cat => {
       console.log(`[RSS] ${cat.label}`);
       const results = await Promise.all(cat.feeds.map(f => fetchFeed(f)));
-      const items = results
-        .flat()
-        .filter(item => item.title && item.link)
+      const all = results.flat().filter(item => item.title && item.link);
+      const items = all
+        .filter(item => hasJapanese(item.title))
+        .filter(item => isRelevant(item, cat.id))
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 20);
-      console.log(`  → ${items.length}件取得`);
+      console.log(`  → ${all.length}件取得 → フィルタ後 ${items.length}件`);
       return { ...cat, items };
     })
   );
