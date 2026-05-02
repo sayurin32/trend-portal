@@ -9,7 +9,6 @@ const parser = new Parser({
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
-// skipLangFilter:true のフィードは英語でも日本語フィルタを通さない（公式ツールブログ等）
 const CATEGORIES = [
   {
     id: 'sns',
@@ -33,8 +32,8 @@ const CATEGORIES = [
       { name: 'Webクリエイターボックス', url: 'https://www.webcreatorbox.com/feed' },
       { name: 'SeleQt',                  url: 'https://www.seleqt.net/feed/' },
       { name: 'baigie',                  url: 'https://baigie.me/officialblog/feed/' },
-      { name: 'LIG',       url: 'https://liginc.co.jp/feed' },
-      { name: 'Figma Blog', url: 'https://www.figma.com/blog/feed/atom.xml', skipLangFilter: true },
+      { name: 'LIG',   url: 'https://liginc.co.jp/feed' },
+      { name: 'ミエルカ', url: 'https://mieru-ca.com/blog/feed/' },
     ],
   },
   {
@@ -70,7 +69,7 @@ const CATEGORIES = [
       { name: 'Qiita',        url: 'https://qiita.com/popular-items/feed.atom' },
       { name: 'gihyo.jp',     url: 'https://gihyo.jp/feed/atom' },
       { name: 'Developers.IO', url: 'https://dev.classmethod.jp/feed/' },
-      { name: 'web.dev',      url: 'https://web.dev/feed.xml', skipLangFilter: true },
+      { name: 'LISKUL',        url: 'https://liskul.com/feed' },
     ],
   },
 ];
@@ -164,7 +163,6 @@ async function fetchFeed(source) {
         .trim()
         .slice(0, 200),
       source: source.name,
-      skipLangFilter: source.skipLangFilter || false,
     }));
   } catch (err) {
     console.warn(`  ⚠  ${source.name}: ${err.message}`);
@@ -422,7 +420,7 @@ async function main() {
       const results = await Promise.all(cat.feeds.map(f => fetchFeed(f)));
       const all = results.flat().filter(item => item.title && item.link);
       const items = all
-        .filter(item => item.skipLangFilter || hasJapanese(item.title))
+        .filter(item => hasJapanese(item.title))
         .filter(item => isRelevant(item, cat.id))
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 20);
