@@ -193,7 +193,7 @@ ${articleList}
 ]`;
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -218,7 +218,7 @@ async function enrichWithAI(items, categoryLabel) {
     console.log('  (GEMINI_API_KEY未設定 — AI要約をスキップ)');
     return items;
   }
-  const BATCH = 5;
+  const BATCH = 10;
   const enriched = [];
   for (let i = 0; i < items.length; i += BATCH) {
     const batch = items.slice(i, i + BATCH);
@@ -230,7 +230,7 @@ async function enrichWithAI(items, categoryLabel) {
       console.warn(`  ⚠ AI処理失敗: ${err.message}`);
       enriched.push(...batch);
     }
-    if (i + BATCH < items.length) await sleep(4500);
+    if (i + BATCH < items.length) await sleep(6000);
   }
   return enriched;
 }
