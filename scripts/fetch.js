@@ -9,6 +9,7 @@ const parser = new Parser({
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
+// skipLangFilter:true のフィードは英語でも日本語フィルタを通さない（公式ツールブログ等）
 const CATEGORIES = [
   {
     id: 'sns',
@@ -16,11 +17,11 @@ const CATEGORIES = [
     icon: '📱',
     color: '#6366f1',
     feeds: [
-      { name: 'DIGIDAY Japan', url: 'https://digiday.jp/feed/' },
-      { name: 'AdverTimes',    url: 'https://www.advertimes.com/feed/' },
-      { name: 'LISKUL',        url: 'https://liskul.com/feed' },
-      { name: 'HubSpot Japan', url: 'https://blog.hubspot.jp/marketing/rss.xml' },
-      { name: 'ミエルカ',      url: 'https://mieru-ca.com/blog/feed/' },
+      { name: 'ソーシャルメディアラボ', url: 'https://smmlab.jp/feed/' },
+      { name: 'DIGIDAY Japan',         url: 'https://digiday.jp/feed/' },
+      { name: 'AdverTimes',            url: 'https://www.advertimes.com/feed/' },
+      { name: 'Marketing Native',      url: 'https://marketingnative.jp/feed/' },
+      { name: 'HubSpot Japan',         url: 'https://blog.hubspot.jp/marketing/rss.xml' },
     ],
   },
   {
@@ -32,8 +33,8 @@ const CATEGORIES = [
       { name: 'Webクリエイターボックス', url: 'https://www.webcreatorbox.com/feed' },
       { name: 'SeleQt',                  url: 'https://www.seleqt.net/feed/' },
       { name: 'baigie',                  url: 'https://baigie.me/officialblog/feed/' },
-      { name: 'Developers.IO',           url: 'https://dev.classmethod.jp/feed/' },
-      { name: 'LIG',                     url: 'https://liginc.co.jp/feed' },
+      { name: 'LIG',       url: 'https://liginc.co.jp/feed' },
+      { name: 'Figma Blog', url: 'https://www.figma.com/blog/feed/atom.xml', skipLangFilter: true },
     ],
   },
   {
@@ -44,8 +45,8 @@ const CATEGORIES = [
     feeds: [
       { name: 'LISKUL',     url: 'https://liskul.com/feed' },
       { name: 'ミエルカ',   url: 'https://mieru-ca.com/blog/feed/' },
+      { name: 'バズ部',     url: 'https://bazubu.com/feed' },
       { name: 'AdverTimes', url: 'https://www.advertimes.com/feed/' },
-      { name: 'HubSpot Japan', url: 'https://blog.hubspot.jp/marketing/rss.xml' },
     ],
   },
   {
@@ -56,6 +57,7 @@ const CATEGORIES = [
     feeds: [
       { name: 'VIDEO SALON', url: 'https://videosalon.jp/feed/' },
       { name: 'AV Watch',    url: 'https://av.watch.impress.co.jp/data/rss/1.0/avw/feed.rdf' },
+      { name: 'LIG',         url: 'https://liginc.co.jp/feed' },
     ],
   },
   {
@@ -64,10 +66,11 @@ const CATEGORIES = [
     icon: '💻',
     color: '#10b981',
     feeds: [
-      { name: 'Zenn',            url: 'https://zenn.dev/feed' },
-      { name: 'Qiita',           url: 'https://qiita.com/popular-items/feed.atom' },
-      { name: 'gihyo.jp',        url: 'https://gihyo.jp/feed/atom' },
-      { name: 'Developers.IO',   url: 'https://dev.classmethod.jp/feed/' },
+      { name: 'Zenn',         url: 'https://zenn.dev/feed' },
+      { name: 'Qiita',        url: 'https://qiita.com/popular-items/feed.atom' },
+      { name: 'gihyo.jp',     url: 'https://gihyo.jp/feed/atom' },
+      { name: 'Developers.IO', url: 'https://dev.classmethod.jp/feed/' },
+      { name: 'web.dev',      url: 'https://web.dev/feed.xml', skipLangFilter: true },
     ],
   },
 ];
@@ -79,22 +82,69 @@ function hasJapanese(text) {
 
 // カテゴリ関連キーワード（タイトル＋説明文に1つ以上含まれれば通過）
 const KEYWORDS = {
-  sns: ['SNS', 'Instagram', 'インスタ', 'Twitter', 'TikTok', 'YouTube', 'Facebook', 'LINE',
-        'マーケティング', 'ソーシャル', 'フォロワー', '広告', 'インフルエンサー', 'エンゲージメント',
-        'リール', 'バズ', '投稿', 'アカウント', 'ブランド', 'X（旧', 'プロモーション'],
-  design: ['デザイン', 'UI', 'UX', 'CSS', 'Figma', 'フィグマ', 'レイアウト', 'フォント',
-           'カラー', 'Webサイト', 'ウェブサイト', 'ビジュアル', 'グラフィック', 'ロゴ',
-           'バナー', 'ワイヤー', 'プロトタイプ', 'アクセシビリティ', 'タイポグラフィ'],
-  writing: ['ライティング', 'コピー', '文章', '記事', 'コンテンツ', 'SEO', 'ブログ', '執筆',
-            'テキスト', '見出し', '構成', 'キャッチコピー', '読者', '言葉', 'メディア',
-            'ターゲット', 'ペルソナ', 'ストーリー'],
-  video: ['動画', '映像', '撮影', '編集', 'カメラ', 'After Effects', 'Premiere', 'ショート動画',
-          'YouTube', 'リール', 'Vlog', '映画', '照明', '音響', 'エフェクト', 'モーション',
-          '配信', 'ライブ', 'プロダクション', '字幕', 'ドローン', 'レンズ', 'シネマ',
-          'スタビライザー', 'ジンバル', 'コーデック', 'レンダリング', '収録'],
-  coding: ['プログラミング', 'コーディング', 'JavaScript', 'TypeScript', 'Python', 'React',
-           'Vue', 'HTML', 'CSS', 'エンジニア', '開発', 'API', 'フレームワーク', 'GitHub',
-           'Node', 'AI', 'LLM', 'コード', 'Web開発', 'フロントエンド', 'バックエンド'],
+  sns: [
+    // プラットフォーム
+    'Instagram', 'インスタ', 'TikTok', 'ティックトック', 'X（旧', 'Twitter', 'YouTube',
+    'Facebook', 'LINE', 'Threads', 'スレッズ', 'BeReal',
+    // マーケティング全般
+    'SNS', 'ソーシャル', 'マーケティング', 'フォロワー', '広告', 'インフルエンサー',
+    'エンゲージメント', 'リーチ', 'インプレッション', 'バズ', '投稿', 'アカウント',
+    'プロモーション', 'ブランド', 'ファン', 'バイラル',
+    // コース固有ツール・スキル
+    'Canva', 'キャンバ', 'CapCut', 'キャプカット', 'インサイト', 'アナリティクス',
+    '運用代行', '運用', 'ストーリーズ', 'ハッシュタグ', 'リール', 'フィード投稿',
+    'プロフィール', 'キャプション', '数値分析', 'リサーチ',
+  ],
+  design: [
+    // ツール
+    'Figma', 'フィグマ', 'Photoshop', 'フォトショップ', 'フォトショ',
+    'Illustrator', 'イラストレーター', 'イラレ', 'Adobe', 'アドビ',
+    'Canva', 'キャンバ',
+    // デザイン全般
+    'デザイン', 'UI', 'UX', 'レイアウト', 'フォント', 'カラー', 'ビジュアル',
+    'グラフィック', 'ロゴ', 'バナー', 'ワイヤー', 'プロトタイプ', 'タイポグラフィ',
+    'アクセシビリティ', 'コンポーネント', 'スタイルガイド',
+    // 制作物・用途
+    'LP', 'ランディングページ', 'HP制作', 'ホームページ', 'Webデザイン', 'バナー制作',
+    // AI画像生成
+    '画像生成', 'AI生成', 'Firefly', 'ファイアフライ', 'Midjourney', 'ミッドジャーニー',
+    'Stable Diffusion', '生成AI', 'text-to-image',
+  ],
+  writing: [
+    // SEO・検索
+    'SEO', '検索エンジン', 'キーワード', '検索意図', '上位表示', 'E-E-A-T', 'E-A-T',
+    'ロングテール', '被リンク', 'オーガニック', 'SERPs',
+    // ライティング技法
+    'ライティング', 'コピーライティング', 'コピー', '文章', '執筆', 'PREP', 'PREP法',
+    '構成', '見出し', 'リード文', 'キャッチコピー', '読者', 'ペルソナ',
+    // コンテンツ
+    '記事', 'コンテンツ', 'ブログ', 'メディア', 'オウンドメディア', 'コンテンツマーケティング',
+    'ジャンル', '編集', '取材', 'インタビュー', 'まとめ記事',
+  ],
+  video: [
+    // ツール
+    'Premiere', 'After Effects', 'CapCut', 'DaVinci', 'Final Cut',
+    // 制作・技術
+    '動画', '映像', '撮影', '編集', 'カメラ', '照明', '音響', 'エフェクト', 'モーション',
+    'テロップ', 'BGM', 'SE', 'トランジション', 'カット編集', 'カラーグレーディング',
+    'レンダリング', 'コーデック', '収録', 'ドローン', 'レンズ', 'シネマ',
+    // プラットフォーム・コンテンツ
+    'YouTube', 'YouTuber', 'チャンネル', 'サムネイル', 'ショート動画', 'ショート',
+    'リール', 'Vlog', '配信', 'ライブ配信', '字幕', 'プロダクション',
+  ],
+  coding: [
+    // 言語・技術
+    'HTML', 'CSS', 'JavaScript', 'TypeScript', 'jQuery',
+    'Flexbox', 'Grid', 'レスポンシブ', 'アニメーション',
+    // フレームワーク・ツール
+    'WordPress', 'ワードプレス', 'React', 'Vue', 'Next.js', 'GitHub', 'Git',
+    // Web制作全般
+    'コーディング', 'プログラミング', 'Web制作', 'サイト制作', 'ホームページ制作',
+    'フロントエンド', 'エンジニア', 'コード', '実装',
+    // 入門・キャリア
+    '初心者', 'チュートリアル', '入門', '模写', '案件', '副業', 'フリーランス',
+    'Web開発', 'ポートフォリオ',
+  ],
 };
 
 function isRelevant(item, categoryId) {
@@ -114,6 +164,7 @@ async function fetchFeed(source) {
         .trim()
         .slice(0, 200),
       source: source.name,
+      skipLangFilter: source.skipLangFilter || false,
     }));
   } catch (err) {
     console.warn(`  ⚠  ${source.name}: ${err.message}`);
@@ -371,7 +422,7 @@ async function main() {
       const results = await Promise.all(cat.feeds.map(f => fetchFeed(f)));
       const all = results.flat().filter(item => item.title && item.link);
       const items = all
-        .filter(item => hasJapanese(item.title))
+        .filter(item => item.skipLangFilter || hasJapanese(item.title))
         .filter(item => isRelevant(item, cat.id))
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 20);
